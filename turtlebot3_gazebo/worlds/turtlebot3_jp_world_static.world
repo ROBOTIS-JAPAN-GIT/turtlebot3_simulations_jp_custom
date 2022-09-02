@@ -64,8 +64,8 @@
 
       <plugin name="initial_random1" filename="libinitial_random.so">
         <origin>10.0 0.0 0.0</origin>
-        <rx>10.0</rx><ry>5.0</ry>
-        <seed>6723872</seed>
+        <rx>11.0</rx><ry>6.0</ry>
+        <!-- <seed>6723872</seed> -->
       </plugin>
     </model>
 
@@ -97,8 +97,8 @@
 
       <plugin name="initial_random2" filename="libinitial_random.so">
         <origin>10.0 0.0 0.0</origin>
-        <rx>10.0</rx><ry>5.0</ry>
-        <seed>6723872</seed>
+        <rx>11.0</rx><ry>6.0</ry>
+        <!-- <seed>6723872</seed> -->
       </plugin>
     </model>
 
@@ -130,8 +130,8 @@
 
       <plugin name="initial_random3" filename="libinitial_random.so">
         <origin>10.0 0.0 0.0</origin>
-        <rx>10.0</rx><ry>5.0</ry>
-        <seed>6723872</seed>
+        <rx>11.0</rx><ry>6.0</ry>
+        <!-- <seed>6723872</seed> -->
       </plugin>
     </model>
 
@@ -161,8 +161,8 @@
   
       <plugin name="initial_random4" filename="libinitial_random.so">
         <origin>10.0 0.0 0.0</origin>
-        <rx>10.0</rx><ry>5.0</ry>
-        <seed>6723872</seed>
+        <rx>11.0</rx><ry>6.0</ry>
+        <!-- <seed>6723872</seed> -->
       </plugin>
     </model>
   
@@ -192,8 +192,8 @@
   
       <plugin name="initial_random5" filename="libinitial_random.so">
         <origin>10.0 0.0 0.0</origin>
-        <rx>10.0</rx><ry>5.0</ry>
-        <seed>6723872</seed>
+        <rx>11.0</rx><ry>6.0</ry>
+        <!-- <seed>6723872</seed> -->
       </plugin>
     </model>
   
@@ -223,8 +223,8 @@
   
       <plugin name="initial_random6" filename="libinitial_random.so">
         <origin>10.0 0.0 0.0</origin>
-        <rx>10.0</rx><ry>5.0</ry>
-        <seed>6723872</seed>
+        <rx>11.0</rx><ry>6.0</ry>
+        <!-- <seed>6723872</seed> -->
       </plugin>
     </model>
       
