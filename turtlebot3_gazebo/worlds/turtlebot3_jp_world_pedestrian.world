@@ -62,7 +62,7 @@
     </model>
 
     <actor name="actor1">
-      <pose>-1 2 -10 0 0 0</pose>
+      <pose>6 0 -10 0 0 0</pose>
       <skin>
         <filename>walk.dae</filename>
         <scale>1.0</scale>
@@ -89,17 +89,17 @@
           <model>ground_plane</model>
           <model>actor1_collision_model</model>
         </ignore_obstacles>
-        <!-- <trajectory>
+        <trajectory>
           <cyclic>true</cyclic>
-          <waypoint>3 -5 -1</waypoint>
-          <waypoint>3 5 -1</waypoint>
-        </trajectory> -->
-        <random_trajectory>
-          <steps>10</steps>
+          <waypoint>6 0 -1</waypoint>
+          <waypoint>0 0 -1</waypoint>
+        </trajectory>
+        <!-- <random_trajectory>
+          <steps>10</steps> -->
           <!-- <seed>6723872</seed> -->
-          <origin>6 0.0 0.0</origin>
-          <rx>6.0</rx><ry>5.0</ry>
-        </random_trajectory>
+          <!-- <origin>10.0 0.0 0.0</origin>
+          <rx>11.0</rx><ry>6.0</ry>
+        </random_trajectory> -->
       </plugin>
 
       <plugin name="attach_model1" filename="libAttachModelPlugin.so">
@@ -138,7 +138,7 @@
     </model>
   
     <actor name="actor2">
-      <pose>-1 2 -10 0 0 0</pose>
+      <pose>7 -3 -10 0 0 0</pose>
       <skin>
         <filename>walk.dae</filename>
         <scale>1.0</scale>
@@ -165,17 +165,17 @@
           <model>ground_plane</model>
           <model>actor2_collision_model</model>
         </ignore_obstacles>
-        <!-- <trajectory>
+        <trajectory>
           <cyclic>true</cyclic>
-          <waypoint>3 -5 -1</waypoint>
-          <waypoint>3 5 -1</waypoint>
-        </trajectory> -->
-        <random_trajectory>
-          <steps>10</steps>
+          <waypoint>7 -3 -1</waypoint>
+          <waypoint>7 3 -1</waypoint>
+        </trajectory>
+        <!-- <random_trajectory>
+          <steps>10</steps> -->
           <!-- <seed>6723872</seed> -->
-          <origin>6 0.0 0.0</origin>
-          <rx>6.0</rx><ry>5.0</ry>
-        </random_trajectory>
+          <!-- <origin>10.0 0.0 0.0</origin>
+          <rx>11.0</rx><ry>6.0</ry>
+        </random_trajectory> -->
       </plugin>
   
       <plugin name="attach_model2" filename="libAttachModelPlugin.so">
@@ -214,7 +214,7 @@
     </model>
   
     <actor name="actor3">
-      <pose>-1 2 -10 0 0 0</pose>
+      <pose>8 3 -10 0 0 0</pose>
       <skin>
         <filename>walk.dae</filename>
         <scale>1.0</scale>
@@ -241,17 +241,17 @@
           <model>ground_plane</model>
           <model>actor3_collision_model</model>
         </ignore_obstacles>
-        <!-- <trajectory>
+        <trajectory>
           <cyclic>true</cyclic>
-          <waypoint>3 -5 -1</waypoint>
-          <waypoint>3 5 -1</waypoint>
-        </trajectory> -->
-        <random_trajectory>
-          <steps>10</steps>
+          <waypoint>8 3 -1</waypoint>
+          <waypoint>10 -3 -1</waypoint>
+        </trajectory>
+        <!-- <random_trajectory>
+          <steps>10</steps> -->
           <!-- <seed>6723872</seed> -->
-          <origin>6 0.0 0.0</origin>
-          <rx>6.0</rx><ry>5.0</ry>
-        </random_trajectory>
+          <!-- <origin>10.0 0.0 0.0</origin>
+          <rx>11.0</rx><ry>6.0</ry>
+        </random_trajectory> -->
       </plugin>
   
       <plugin name="attach_model3" filename="libAttachModelPlugin.so">
@@ -290,7 +290,7 @@
     </model>
   
     <actor name="actor4">
-      <pose>-1 2 -10 0 0 0</pose>
+      <pose>11 3 -10 0 0 0</pose>
       <skin>
         <filename>walk.dae</filename>
         <scale>1.0</scale>
@@ -318,17 +318,17 @@
           <model>ground_plane</model>
           <model>actor4_collision_model</model>
         </ignore_obstacles>
-        <!-- <trajectory>
+        <trajectory>
           <cyclic>true</cyclic>
-          <waypoint>3 -5 -1</waypoint>
-          <waypoint>3 5 -1</waypoint>
-        </trajectory> -->
-        <random_trajectory>
-          <steps>10</steps>
+          <waypoint>11 3 -1</waypoint>
+          <waypoint>11 -3 -1</waypoint>
+        </trajectory>
+        <!-- <random_trajectory>
+          <steps>10</steps> -->
           <!-- <seed>6723872</seed> -->
-          <origin>6 0.0 0.0</origin>
-          <rx>6.0</rx><ry>5.0</ry>
-        </random_trajectory>
+          <!-- <origin>10.0 0.0 0.0</origin>
+          <rx>11.0</rx><ry>6.0</ry>
+        </random_trajectory> -->
       </plugin>
   
       <plugin name="attach_model4" filename="libAttachModelPlugin.so">
@@ -367,7 +367,7 @@
     </model>
   
     <actor name="actor5">
-      <pose>-1 2 -10 0 0 0</pose>
+      <pose>12 -3 -10 0 0 0</pose>
       <skin>
         <filename>walk.dae</filename>
         <scale>1.0</scale>
@@ -395,17 +395,17 @@
           <model>ground_plane</model>
           <model>actor5_collision_model</model>
         </ignore_obstacles>
-        <!-- <trajectory>
+        <trajectory>
           <cyclic>true</cyclic>
-          <waypoint>3 -5 -1</waypoint>
-          <waypoint>3 5 -1</waypoint>
-        </trajectory> -->
-        <random_trajectory>
-          <steps>10</steps>
+          <waypoint>12 -3 -1</waypoint>
+          <waypoint>14 3 -1</waypoint>
+        </trajectory>
+        <!-- <random_trajectory>
+          <steps>10</steps> -->
           <!-- <seed>6723872</seed> -->
-          <origin>6 0.0 0.0</origin>
-          <rx>6.0</rx><ry>5.0</ry>
-        </random_trajectory>
+          <!-- <origin>10.0 0.0 0.0</origin>
+          <rx>11.0</rx><ry>6.0</ry>
+        </random_trajectory> -->
       </plugin>
   
       <plugin name="attach_model5" filename="libAttachModelPlugin.so">
@@ -444,7 +444,7 @@
     </model>
   
     <actor name="actor6">
-      <pose>-1 2 -10 0 0 0</pose>
+      <pose>15 3 -10 0 0 0</pose>
       <skin>
         <filename>walk.dae</filename>
         <scale>1.0</scale>
@@ -472,17 +472,17 @@
           <model>ground_plane</model>
           <model>actor6_collision_model</model>
         </ignore_obstacles>
-        <!-- <trajectory>
+        <trajectory>
           <cyclic>true</cyclic>
-          <waypoint>3 -5 -1</waypoint>
-          <waypoint>3 5 -1</waypoint>
-        </trajectory> -->
-        <random_trajectory>
-          <steps>10</steps>
+          <waypoint>15 3 -1</waypoint>
+          <waypoint>15 -3 -1</waypoint>
+        </trajectory>
+        <!-- <random_trajectory>
+          <steps>10</steps> -->
           <!-- <seed>6723872</seed> -->
-          <origin>6 0.0 0.0</origin>
-          <rx>6.0</rx><ry>5.0</ry>
-        </random_trajectory>
+          <!-- <origin>10.0 0.0 0.0</origin>
+          <rx>11.0</rx><ry>6.0</ry>
+        </random_trajectory> -->
       </plugin>
   
       <plugin name="attach_model6" filename="libAttachModelPlugin.so">
