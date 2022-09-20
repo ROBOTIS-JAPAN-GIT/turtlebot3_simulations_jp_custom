@@ -5,7 +5,7 @@
     <link name="walllink">
     
     <collision name="collision">
-        <pose>0 0 0 0 0 -1.5708</pose>
+        <pose>19 0 0 0 0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebot3_corridor/meshes/corridor_6x20.stl</uri>
@@ -25,7 +25,7 @@
       </collision>
 
       <visual name="visual">
-        <pose>0 0 0 0 0 -1.5708</pose>
+        <pose>19 0 0 0 0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebot3_corridor/meshes/corridor_6x20.stl</uri>
