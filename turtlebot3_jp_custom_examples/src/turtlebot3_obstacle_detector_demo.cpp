@@ -18,6 +18,9 @@
 
 #include "turtlebot3_jp_custom_examples/turtlebot3_obstacle_detector_demo.h"
 
+#include <cstdio>
+#include <ctime>
+
 Turtlebot3Drive::Turtlebot3Drive()
     : nh_priv_("~")
 {
@@ -53,21 +56,11 @@ bool Turtlebot3Drive::init()
     odom_sub_ = nh_.subscribe("odom", 10, &Turtlebot3Drive::odomMsgCallBack, this);
     obstacle_sub_ = nh_.subscribe("obstacles", 10, &Turtlebot3Drive::obstacleMsgCallBack, this);
     cmdvel_sub_ = nh_.subscribe("cmd_vel", 10, &Turtlebot3Drive::cmdvelMsgCallBack, this);
+    goal_sub_ = nh_.subscribe("move_base_simple/goal", 10, &Turtlebot3Drive::naviGoalCallBack, this);
 
     nh_.param("tf_name1", tf_name1, std::string("/base_link"));
     nh_.param("tf_name2", tf_name2, std::string("/map"));
     listener = new tf::TransformListener(ros::Duration(10));
-
-    // record
-    goal_sub_ = nh_.subscribe("move_base_simple/goal", 10, &Turtlebot3Drive::naviGoalCallBack, this);
-    recordp = fopen("turtlebot3_record.csv", "w");
-    minp = fopen("turtlebot3_record_min.csv", "w");
-    if (recordp == nullptr || minp == nullptr)
-    {
-        ROS_INFO("cannnot open csv");
-        ros::shutdown();
-        return false;
-    }
 
     return true;
 }
@@ -149,6 +142,24 @@ void Turtlebot3Drive::cmdvelMsgCallBack(const geometry_msgs::Twist::ConstPtr &ms
 void Turtlebot3Drive::naviGoalCallBack(const geometry_msgs::PoseStamped::ConstPtr &msg)
 {
     publish_mode_ = true;
+    // record
+    char buf[32];
+    std::time_t rawtime;
+    std::time(&rawtime);
+    std::strftime(buf, 32, "%Y-%m-%d-%H-%M-%S", std::localtime(&rawtime));
+
+    char filename[64];
+    sprintf(filename, "turtlebot3_csv_time_%s.csv", buf);
+    recordp = fopen(filename, "w");
+    sprintf(filename, "turtlebot3_csv_scan_%s.csv", buf);
+    minp = fopen(filename, "w");
+    if (recordp == nullptr || minp == nullptr)
+    {
+        ROS_INFO("cannnot open csv");
+        ros::shutdown();
+        return;
+    }
+
     x_goal_ = msg->pose.position.x;
     y_goal_ = msg->pose.position.y;
     record_start_time_ = ros::WallTime::now();
@@ -207,7 +218,7 @@ bool Turtlebot3Drive::controlLoop()
         if (hypot(x_m - x_goal_, y_m - y_goal_) < GOAL_ERROR)
         {
             publish_mode_ = false;
-            ROS_INFO("Reached to goal. Ctrl-C to shutdown.");
+            ROS_INFO("Reached to goal.");
             fclose(recordp);
             fclose(minp);
         }
