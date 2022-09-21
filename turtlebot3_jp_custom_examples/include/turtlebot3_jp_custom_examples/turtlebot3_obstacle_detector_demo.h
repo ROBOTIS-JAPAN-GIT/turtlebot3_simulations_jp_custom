@@ -47,6 +47,8 @@
 #define TB3_RIGHT_TURN    2
 #define TB3_LEFT_TURN     3
 
+#define GOAL_ERROR 0.1
+
 class Turtlebot3Drive
 {
  public:
