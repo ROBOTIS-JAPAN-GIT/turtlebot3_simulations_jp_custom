@@ -24,6 +24,7 @@
 #include <sensor_msgs/LaserScan.h>
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
+#include <geometry_msgs/PoseStamped.h>
 #include <obstacle_detector/Obstacles.h>
 
 #include <tf/tf.h>
@@ -59,23 +60,32 @@ class Turtlebot3Drive
   ros::NodeHandle nh_;
   ros::NodeHandle nh_priv_;
 
-  // ROS Parameters
-
-  // ROS Time
-
-  // ROS Topic Publishers
-  ros::Publisher cmd_vel_pub_;
-
   // ROS Topic Subscribers
   ros::Subscriber laser_scan_sub_;
   ros::Subscriber odom_sub_;
   ros::Subscriber obstacle_sub_;
+  ros::Subscriber cmdvel_sub_;
 
+  // tf
   tf::TransformListener *listener;
   tf::StampedTransform trans_slam;
   std::string tf_name1;
   std::string tf_name2;
-  double x_m=0.0, y_m=0.0;
+  double x_m=0.0, y_m=0.0, th_m=0.0;
+  double prev_x_m=0.0, prev_y_m=0.0;
+
+  // record
+  ros::Subscriber goal_sub_;
+  bool publish_mode_ = false;
+  void naviGoalCallBack(const geometry_msgs::PoseStamped::ConstPtr &msg);
+  double x_goal_ = 0.0;
+  double y_goal_ = 0.0;
+
+  double min_scan_;
+
+  ros::WallTime record_start_time_;
+  FILE *recordp;
+  FILE *minp;
 
   // Variables
   double escape_range_;
@@ -87,10 +97,15 @@ class Turtlebot3Drive
   double tb3_pose_;
   double prev_tb3_pose_;
 
+  double cmd_vel_linear_;
+  double cmd_vel_angular_;
+
+  double moving_distance_ = 0.0;
+
   // Function prototypes
-  void updatecommandVelocity(double linear, double angular);
   void laserScanMsgCallBack(const sensor_msgs::LaserScan::ConstPtr &msg);
   void odomMsgCallBack(const nav_msgs::Odometry::ConstPtr &msg);
   void obstacleMsgCallBack(const obstacle_detector::Obstacles::ConstPtr &msg);
+  void cmdvelMsgCallBack(const geometry_msgs::Twist::ConstPtr &msg);
 };
 #endif // TURTLEBOT3_DRIVE_H_
