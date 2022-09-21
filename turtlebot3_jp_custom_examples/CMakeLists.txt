@@ -42,6 +42,13 @@ install(TARGETS turtlebot3_obstacle_detector_demo
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+add_executable(turtlebot3_navi_waypoint src/turtlebot3_navi_waypoint.cpp)
+add_dependencies(turtlebot3_navi_waypoint ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(turtlebot3_navi_waypoint ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+install(TARGETS turtlebot3_navi_waypoint
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 )
