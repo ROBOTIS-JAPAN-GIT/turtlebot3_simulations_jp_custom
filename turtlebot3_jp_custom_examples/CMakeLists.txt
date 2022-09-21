@@ -49,6 +49,14 @@ install(TARGETS turtlebot3_navi_waypoint
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+add_executable(turtlebot3_trajectory_publisher src/turtlebot3_trajectory_publisher.cpp)
+add_dependencies(turtlebot3_trajectory_publisher ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(turtlebot3_trajectory_publisher ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+install(TARGETS turtlebot3_trajectory_publisher
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 )
