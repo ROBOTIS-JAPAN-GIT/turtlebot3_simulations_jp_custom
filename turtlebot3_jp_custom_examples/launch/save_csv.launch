@@ -1,0 +1,3 @@
+<launch>
+    <node name="save_csv" pkg="turtlebot3_jp_custom_examples" type="turtlebot3_obstacle_detector_demo" required="true" output="screen"/>
+</launch>
