@@ -101,8 +101,10 @@ void Turtlebot3Drive::laserScanMsgCallBack(const sensor_msgs::LaserScan::ConstPt
     for (int i = 1; i < msg->ranges.size(); i++) {
       if (min_scan_ > msg->ranges.at(i)) min_scan_ = msg->ranges.at(i);
     }
-    fprintf(minp, "%d, %f, %f, %f, %f, %f, %f, %f", ++count, x_m, y_m, th_m, cmd_vel_linear_, cmd_vel_angular_, moving_distance_, min_scan_);
-    fprintf(minp, "\n");
+    if (publish_mode_) {
+      fprintf(minp, "%d, %f, %f, %f, %f, %f, %f, %f", ++count, x_m, y_m, th_m, cmd_vel_linear_, cmd_vel_angular_, moving_distance_, min_scan_);
+      fprintf(minp, "\n");
+    }
 }
 
 void Turtlebot3Drive::obstacleMsgCallBack(const obstacle_detector::Obstacles::ConstPtr &msg) {
@@ -127,6 +129,7 @@ void Turtlebot3Drive::naviGoalCallBack(const geometry_msgs::PoseStamped::ConstPt
   x_goal_ = msg->pose.position.x;
   y_goal_ = msg->pose.position.y;
   record_start_time_ = ros::WallTime::now();
+  ROS_INFO("start recording");
 }
 /*******************************************************************************
 * Control Loop function
@@ -153,10 +156,17 @@ bool Turtlebot3Drive::controlLoop()
         prev_x_m = x_m;
         prev_y_m = y_m;
         if (recordp != nullptr) {
+          ROS_INFO("%u.%09u, %f, %f, %f, %f, %f, %f, %f", time.sec, time.nsec, x_m, y_m, th_m, cmd_vel_linear_, cmd_vel_angular_, moving_distance_, min_scan_);
           fprintf(recordp, "%u.%09u, %f, %f, %f, %f, %f, %f, %f", time.sec, time.nsec, x_m, y_m, th_m, cmd_vel_linear_, cmd_vel_angular_, moving_distance_, min_scan_);
           fprintf(recordp, "\n");
+          fflush(recordp);
         } 
-        if (hypot(x_m-x_goal_, y_m-y_goal_) < 0.1) publish_mode_ = false;
+        if (hypot(x_m-x_goal_, y_m-y_goal_) < 0.1) {
+          publish_mode_ = false;
+          ROS_INFO("Reached to goal. Ctrl-C to shutdown.");
+          fclose(recordp);
+          fclose(minp);
+        }
       }
 
   return true;
