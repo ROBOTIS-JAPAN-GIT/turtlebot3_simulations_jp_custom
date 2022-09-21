@@ -138,8 +138,26 @@ bool Turtlebot3Drive::controlLoop()
 {
   static uint8_t turtlebot3_state_num = 0;
 
-
-      // SLAM
+  switch(turtlebot3_state_num)
+  {
+    case GET_TB3_DIRECTION:
+      if (scan_data_[CENTER] > check_forward_dist_)
+      {
+        if (scan_data_[LEFT] < check_side_dist_)
+        {
+          prev_tb3_pose_ = tb3_pose_;
+          turtlebot3_state_num = TB3_RIGHT_TURN;
+        }
+        else if (scan_data_[RIGHT] < check_side_dist_)
+        {
+          prev_tb3_pose_ = tb3_pose_;
+          turtlebot3_state_num = TB3_LEFT_TURN;
+        }
+        else
+        {
+          turtlebot3_state_num = TB3_DRIVE_FORWARD;
+        }
+        // SLAM
       try {
         listener->lookupTransform(tf_name2, tf_name1,ros::Time(0), trans_slam);
         x_m = trans_slam.getOrigin().x();
@@ -168,6 +186,38 @@ bool Turtlebot3Drive::controlLoop()
           fclose(minp);
         }
       }
+      }
+
+      if (scan_data_[CENTER] < check_forward_dist_)
+      {
+        prev_tb3_pose_ = tb3_pose_;
+        turtlebot3_state_num = TB3_RIGHT_TURN;
+      }
+      break;
+
+    case TB3_DRIVE_FORWARD:
+      // updatecommandVelocity(LINEAR_VELOCITY, 0.0);
+      turtlebot3_state_num = GET_TB3_DIRECTION;
+      break;
+
+    case TB3_RIGHT_TURN:
+      if (fabs(prev_tb3_pose_ - tb3_pose_) >= escape_range_)
+        turtlebot3_state_num = GET_TB3_DIRECTION;
+      else
+        // updatecommandVelocity(0.0, -1 * ANGULAR_VELOCITY);
+      break;
+
+    case TB3_LEFT_TURN:
+      if (fabs(prev_tb3_pose_ - tb3_pose_) >= escape_range_)
+        turtlebot3_state_num = GET_TB3_DIRECTION;
+      else
+        // updatecommandVelocity(0.0, ANGULAR_VELOCITY);
+      break;
+
+    default:
+      turtlebot3_state_num = GET_TB3_DIRECTION;
+      break;
+  }
 
   return true;
 }
