@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
     ros::init(argc, argv, "turtlebot3_navi_waypoint");
 
     actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> move_base_action("move_base", true);
-    while (! move_base_action.waitForServer(ros::Duration(5.0)));
+    while (! move_base_action.waitForServer(ros::Duration(60.0)));
     ROS_INFO("action server ok");
 
     move_base_msgs::MoveBaseGoal goal;
