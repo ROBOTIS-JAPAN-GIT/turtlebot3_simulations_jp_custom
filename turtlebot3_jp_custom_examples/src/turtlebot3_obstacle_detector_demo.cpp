@@ -103,6 +103,7 @@ void Turtlebot3Drive::laserScanMsgCallBack(const sensor_msgs::LaserScan::ConstPt
     }
     if (publish_mode_) {
       fprintf(minp, "%d, %f, %f, %f, %f, %f, %f, %f", ++count, x_m, y_m, th_m, cmd_vel_linear_, cmd_vel_angular_, moving_distance_, min_scan_);
+      printObstacleAngle(minp);
       fprintf(minp, "\n");
     }
 }
@@ -113,9 +114,18 @@ void Turtlebot3Drive::obstacleMsgCallBack(const obstacle_detector::Obstacles::Co
   // ROS_INFO("robot: x:%f,y:%f", x_m, y_m);
   for (auto circle : msg->circles) {
     // ROS_INFO("#%d: x:%f,y:%f,vx:%f,vy:%f", ++i, circle.center.x, circle.center.y, circle.velocity.x, circle.velocity.y);
-    if (hypot(circle.velocity.x, circle.velocity.y) > 0.3) {
+    if (hypot(circle.velocity.x, circle.velocity.y) > OBSTACLE_DETECTOR_THRESHOLD) {
       // ROS_INFO("#%d: %f", ++i, atan2(circle.center.y-y_m, circle.center.x-x_m)*RAD2DEG);
+      double angle = (atan2(circle.center.y-y_m, circle.center.x-x_m)-th_m)*RAD2DEG;
+      if (angle >  180.0) angle -= 360.0;
+      if (angle < -180.0) angle += 360.0;
+      obstacle_angles[i] = angle;
+      obstacle_exists[i] = true;
+      if (++i == 5) break;
     }
+  }
+  for (; i < 5; i++) {
+    obstacle_exists[i] = false;
   }
 }
 
@@ -130,8 +140,18 @@ void Turtlebot3Drive::naviGoalCallBack(const geometry_msgs::PoseStamped::ConstPt
   y_goal_ = msg->pose.position.y;
   record_start_time_ = ros::WallTime::now();
   ROS_INFO("start recording");
-  fprintf(recordp, "time, x_m, y_m, th_m, cmd_vel_linear_, cmd_vel_angular_, moving_distance_, min_scan_\n");
-  fprintf(minp, "step, x_m, y_m, th_m, cmd_vel_linear_, cmd_vel_angular_, moving_distance_, min_scan_\n");
+  fprintf(recordp, "time, x_m, y_m, th_m, cmd_vel_linear_, cmd_vel_angular_, moving_distance_, min_scan_, o1, o2, o3, o4, o5\n");
+  fprintf(minp, "step, x_m, y_m, th_m, cmd_vel_linear_, cmd_vel_angular_, moving_distance_, min_scan_, o1, o2, o3, o4, o5\n");
+}
+
+void Turtlebot3Drive::printObstacleAngle(FILE *fp) {
+  for (int i = 0; i < 5; i++) {
+    if (obstacle_exists[i]) {
+      fprintf(fp, ", %f", obstacle_angles[i]);
+    } else {
+      fprintf(fp, ", ");
+    }
+  }
 }
 /*******************************************************************************
 * Control Loop function
@@ -180,6 +200,7 @@ bool Turtlebot3Drive::controlLoop()
         if (recordp != nullptr) {
           ROS_INFO("%u.%09u, %f, %f, %f, %f, %f, %f, %f", time.sec, time.nsec, x_m, y_m, th_m, cmd_vel_linear_, cmd_vel_angular_, moving_distance_, min_scan_);
           fprintf(recordp, "%u.%09u, %f, %f, %f, %f, %f, %f, %f", time.sec, time.nsec, x_m, y_m, th_m, cmd_vel_linear_, cmd_vel_angular_, moving_distance_, min_scan_);
+          printObstacleAngle(recordp);
           fprintf(recordp, "\n");
           fflush(recordp);
         } 

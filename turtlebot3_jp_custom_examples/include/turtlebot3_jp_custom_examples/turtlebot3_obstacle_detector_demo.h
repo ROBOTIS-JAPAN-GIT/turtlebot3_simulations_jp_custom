@@ -48,6 +48,7 @@
 #define TB3_LEFT_TURN     3
 
 #define GOAL_ERROR 0.1
+#define OBSTACLE_DETECTOR_THRESHOLD 0.1
 
 class Turtlebot3Drive
 {
@@ -109,5 +110,10 @@ class Turtlebot3Drive
   void odomMsgCallBack(const nav_msgs::Odometry::ConstPtr &msg);
   void obstacleMsgCallBack(const obstacle_detector::Obstacles::ConstPtr &msg);
   void cmdvelMsgCallBack(const geometry_msgs::Twist::ConstPtr &msg);
+  
+  // obstacle_detector
+  double obstacle_angles[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
+  double obstacle_exists[5] = {false, false, false, false, false};
+  void printObstacleAngle(FILE *fp);
 };
 #endif // TURTLEBOT3_DRIVE_H_
