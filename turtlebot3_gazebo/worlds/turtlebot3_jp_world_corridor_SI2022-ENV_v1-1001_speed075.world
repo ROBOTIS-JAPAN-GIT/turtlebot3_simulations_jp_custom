@@ -138,7 +138,7 @@
     </model>
   
     <actor name="actor2">
-      <pose>9 -2.5 -10 0 0 0</pose>
+      <pose>8 -2.5 -10 0 0 0</pose>
       <skin>
         <filename>walk.dae</filename>
         <scale>1.0</scale>
@@ -167,7 +167,7 @@
         </ignore_obstacles>
         <trajectory>
           <cyclic>false</cyclic>
-          <waypoint>9 -2.5 -1</waypoint>
+          <waypoint>8 -2.5 -1</waypoint>
           <waypoint>2 2.5 -1</waypoint>
         </trajectory>
         <!-- <random_trajectory>

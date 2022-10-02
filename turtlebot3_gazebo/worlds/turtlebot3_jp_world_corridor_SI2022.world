@@ -74,7 +74,7 @@
       </animation>
 
       <plugin name="actor1_plugin" filename="libPedestrianSFMRandomPlugin.so">
-        <velocity>0.75</velocity>
+        <velocity>1.00</velocity>
         <radius>0.4</radius>
         <animation_factor>5.1</animation_factor>
         <people_distance>6.0</people_distance>
@@ -138,7 +138,7 @@
     </model>
   
     <actor name="actor2">
-      <pose>8 -2 -10 0 0 0</pose>
+      <pose>8 -2.5 -10 0 0 0</pose>
       <skin>
         <filename>walk.dae</filename>
         <scale>1.0</scale>
@@ -150,7 +150,7 @@
       </animation>
   
       <plugin name="actor2_plugin" filename="libPedestrianSFMRandomPlugin.so">
-        <velocity>0.75</velocity>
+        <velocity>0.80</velocity>
         <radius>0.4</radius>
         <animation_factor>5.1</animation_factor>
         <people_distance>6.0</people_distance>
@@ -226,7 +226,7 @@
       </animation>
   
       <plugin name="actor3_plugin" filename="libPedestrianSFMRandomPlugin.so">
-        <velocity>0.75</velocity>
+        <velocity>0.80</velocity>
         <radius>0.4</radius>
         <animation_factor>5.1</animation_factor>
         <people_distance>6.0</people_distance>
@@ -290,7 +290,7 @@
     </model>
   
     <actor name="actor4">
-      <pose>11 2 -10 0 0 0</pose>
+      <pose>11 -2.5 -10 0 0 0</pose>
       <skin>
         <filename>walk.dae</filename>
         <scale>1.0</scale>
@@ -303,7 +303,7 @@
   
   
       <plugin name="actor4_plugin" filename="libPedestrianSFMRandomPlugin.so">
-        <velocity>0.75</velocity>
+        <velocity>0.60</velocity>
         <radius>0.4</radius>
         <animation_factor>5.1</animation_factor>
         <people_distance>6.0</people_distance>
@@ -320,8 +320,8 @@
         </ignore_obstacles>
         <trajectory>
           <cyclic>true</cyclic>
-          <waypoint>11 2.5 -1</waypoint>
           <waypoint>11 -2.5 -1</waypoint>
+          <waypoint>11 2.5 -1</waypoint>
         </trajectory>
         <!-- <random_trajectory>
           <steps>10</steps> -->
@@ -451,10 +451,10 @@
 
 
         <collision name='obstacle_4'>
-          <pose>17.5 2.25 0 0 0 0</pose>
+          <pose>17.50 2.25 0 0 0 0</pose>
           <geometry>
             <box>
-              <size>1.25 0.75 1.0</size>
+              <size>2.50 0.75 1.0</size>
             </box>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -470,10 +470,10 @@
         </collision>
 
         <visual name='obstacle_4'>
-          <pose>17.5 2.25 0 0 0 0</pose>
+          <pose>17.50 2.25 0 0 0 0</pose>
           <geometry>
             <box>
-              <size>1.25 0.75 1.0</size>
+              <size>2.50 0.75 1.0</size>
             </box>
           </geometry>
           <material>
