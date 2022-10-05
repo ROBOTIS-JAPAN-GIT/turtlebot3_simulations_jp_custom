@@ -4,6 +4,8 @@
 #include <actionlib/client/simple_action_client.h>
 #include <tf/transform_broadcaster.h>
 
+#include <geometry_msgs/PoseStamped.h>
+
 int main(int argc, char* argv[])
 {
     std::vector<std::vector<double>> waypoints = {
@@ -16,6 +18,8 @@ int main(int argc, char* argv[])
 
     ros::init(argc, argv, "turtlebot3_navi_waypoint");
 
+    ros::NodeHandle n;
+
     actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> move_base_action("move_base", true);
     while (! move_base_action.waitForServer(ros::Duration(60.0)));
     ROS_INFO("action server ok");
@@ -23,6 +27,16 @@ int main(int argc, char* argv[])
     move_base_msgs::MoveBaseGoal goal;
     goal.target_pose.header.frame_id = "map";
     goal.target_pose.header.stamp = ros::Time::now();
+
+    ros::Publisher final_goal_pub = n.advertise<geometry_msgs::PoseStamped>("move_base_simple/goal", 1000);
+    geometry_msgs::PoseStamped final_goal;
+    final_goal.header.frame_id = "map";
+    final_goal.header.stamp = ros::Time::now();
+    final_goal.pose.position.x = waypoints.back().at(0);
+    final_goal.pose.position.y = waypoints.back().at(1);
+    tf::quaternionTFToMsg(tf::createQuaternionFromRPY(0.0, 0.0, waypoints.back().at(2)), final_goal.pose.orientation);
+    ros::Duration(0.5).sleep();
+    final_goal_pub.publish(final_goal);
 
     int i = 0;
     for (std::vector<double> waypoint : waypoints) {
