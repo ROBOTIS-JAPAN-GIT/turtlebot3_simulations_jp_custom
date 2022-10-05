@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
     goal.target_pose.header.frame_id = "map";
     goal.target_pose.header.stamp = ros::Time::now();
 
-    ros::Publisher final_goal_pub = n.advertise<geometry_msgs::PoseStamped>("move_base_simple/goal", 1000);
+    ros::Publisher final_goal_pub = n.advertise<geometry_msgs::PoseStamped>("turtlebot3/waypoint_goal", 1000);
     geometry_msgs::PoseStamped final_goal;
     final_goal.header.frame_id = "map";
     final_goal.header.stamp = ros::Time::now();
