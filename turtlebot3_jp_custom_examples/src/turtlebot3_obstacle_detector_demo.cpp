@@ -38,6 +38,8 @@ class Turtlebot3CSVRecorder
   ros::Subscriber odom_sub_;
   ros::Subscriber obstacle_sub_;
   ros::Subscriber cmdvel_sub_;
+  ros::Subscriber waypoint_goal_sub_;
+  ros::Subscriber waypoint_sub_;
 
   // tf
   tf::TransformListener *listener;
@@ -69,11 +71,14 @@ class Turtlebot3CSVRecorder
   void laserScanMsgCallBack(const sensor_msgs::LaserScan::ConstPtr &msg);
   void obstacleMsgCallBack(const obstacle_detector::Obstacles::ConstPtr &msg);
   void cmdvelMsgCallBack(const geometry_msgs::Twist::ConstPtr &msg);
+  void waypointGoalCallBack(const geometry_msgs::PoseStamped::ConstPtr &msg);
+  void waypointCallBack(const move_base_msgs::MoveBaseActionGoal::ConstPtr &msg);
   
   // obstacle_detector
   double obstacle_angles[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
   double obstacle_exists[5] = {false, false, false, false, false};
   void printObstacleAngle(FILE *fp);
+  void startRecord(double goal_x, double goal_y);
 };
 
 Turtlebot3CSVRecorder::Turtlebot3CSVRecorder()
@@ -85,6 +90,8 @@ Turtlebot3CSVRecorder::Turtlebot3CSVRecorder()
     obstacle_sub_ = nh_.subscribe("obstacles", 10, &Turtlebot3CSVRecorder::obstacleMsgCallBack, this);
     cmdvel_sub_ = nh_.subscribe("cmd_vel", 10, &Turtlebot3CSVRecorder::cmdvelMsgCallBack, this);
     goal_sub_ = nh_.subscribe("move_base_simple/goal", 10, &Turtlebot3CSVRecorder::naviGoalCallBack, this);
+    waypoint_sub_= nh_.subscribe("move_base/goal", 10, &Turtlebot3CSVRecorder::waypointCallBack, this);
+    waypoint_goal_sub_= nh_.subscribe("turtlebot3/waypoint_goal", 10, &Turtlebot3CSVRecorder::waypointGoalCallBack, this);
 
     nh_.param("tf_base_link", tf_base_link, std::string("/base_link"));
     nh_.param("tf_map", tf_map, std::string("/map"));
@@ -147,8 +154,22 @@ void Turtlebot3CSVRecorder::cmdvelMsgCallBack(const geometry_msgs::Twist::ConstP
 
 void Turtlebot3CSVRecorder::naviGoalCallBack(const geometry_msgs::PoseStamped::ConstPtr &msg)
 {
+    if (publish_mode_ == true) return;
+    startRecord(msg->pose.position.x,  msg->pose.position.y);
+}
+
+void Turtlebot3CSVRecorder::waypointGoalCallBack(const geometry_msgs::PoseStamped::ConstPtr &msg) {
+    if (publish_mode_ == true) return;
+    startRecord(msg->pose.position.x,  msg->pose.position.y);
+}
+
+void Turtlebot3CSVRecorder::waypointCallBack(const move_base_msgs::MoveBaseActionGoal::ConstPtr &msg) {
+    ROS_INFO("waypoint: x=%f,y=%f", msg->goal.target_pose.pose.position.x, msg->goal.target_pose.pose.position.y);
+}
+
+void Turtlebot3CSVRecorder::startRecord(double goal_x, double goal_y) {
     publish_mode_ = true;
-    // record
+
     char buf[32];
     std::time_t rawtime;
     std::time(&rawtime);
@@ -166,13 +187,14 @@ void Turtlebot3CSVRecorder::naviGoalCallBack(const geometry_msgs::PoseStamped::C
         return;
     }
 
-    x_goal_ = msg->pose.position.x;
-    y_goal_ = msg->pose.position.y;
+    x_goal_ = goal_x;
+    y_goal_ = goal_y;
     record_start_time_ = ros::WallTime::now();
     ROS_INFO("start recording");
     fprintf(recordp, "time, x_m, y_m, th_m, cmd_vel_linear_, cmd_vel_angular_, moving_distance_, min_scan_, o1, o2, o3, o4, o5\n");
     fprintf(minp, "step, x_m, y_m, th_m, cmd_vel_linear_, cmd_vel_angular_, moving_distance_, min_scan_, o1, o2, o3, o4, o5\n");
 }
+
 
 void Turtlebot3CSVRecorder::printObstacleAngle(FILE *fp)
 {
