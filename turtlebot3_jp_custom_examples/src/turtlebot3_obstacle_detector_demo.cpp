@@ -66,6 +66,7 @@ class Turtlebot3CSVRecorder
   double cmd_vel_angular_;
 
   double moving_distance_ = 0.0;
+  int count = 0;
 
   // Function prototypes
   void laserScanMsgCallBack(const sensor_msgs::LaserScan::ConstPtr &msg);
@@ -107,7 +108,6 @@ Turtlebot3CSVRecorder::~Turtlebot3CSVRecorder()
 
 void Turtlebot3CSVRecorder::laserScanMsgCallBack(const sensor_msgs::LaserScan::ConstPtr &msg)
 {
-    static int count = 0;
     min_scan_ = msg->ranges.at(0);
     for (int i = 1; i < msg->ranges.size(); i++)
     {
@@ -169,6 +169,7 @@ void Turtlebot3CSVRecorder::waypointCallBack(const move_base_msgs::MoveBaseActio
 
 void Turtlebot3CSVRecorder::startRecord(double goal_x, double goal_y) {
     publish_mode_ = true;
+    count = 0;
 
     char buf[32];
     std::time_t rawtime;
@@ -234,7 +235,6 @@ bool Turtlebot3CSVRecorder::controlLoop()
         prev_y_m = y_m;
         if (recordp != nullptr)
         {
-            ROS_INFO("%u.%09u, %f, %f, %f, %f, %f, %f, %f", time.sec, time.nsec, x_m, y_m, th_m, cmd_vel_linear_, cmd_vel_angular_, moving_distance_, min_scan_);
             fprintf(recordp, "%u.%09u, %f, %f, %f, %f, %f, %f, %f", time.sec, time.nsec, x_m, y_m, th_m, cmd_vel_linear_, cmd_vel_angular_, moving_distance_, min_scan_);
             printObstacleAngle(recordp);
             fprintf(recordp, "\n");
