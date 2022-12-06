@@ -21,6 +21,7 @@
   <depend>rclcpp</depend>
   <depend>sensor_msgs</depend>
   <depend>tf2</depend>
+  <depend>turtlebot3_description</depend>
   <export>
     <build_type>ament_cmake</build_type>
     <gazebo_ros gazebo_model_path="${prefix}/models"/>
