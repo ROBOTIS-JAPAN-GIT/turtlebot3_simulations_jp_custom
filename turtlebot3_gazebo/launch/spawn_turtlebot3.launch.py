@@ -24,13 +24,20 @@ from launch_ros.actions import Node
 def generate_launch_description():
     # Get the urdf file
     TURTLEBOT3_MODEL = os.environ['TURTLEBOT3_MODEL']
+    urdf_file_name = 'turtlebot3_' + TURTLEBOT3_MODEL + '.urdf.xacro'
     model_folder = 'turtlebot3_' + TURTLEBOT3_MODEL
+    # urdf_path = os.path.join(
+    #     get_package_share_directory('turtlebot3_gazebo'),
+    #     'models',
+    #     model_folder,
+    #     'model.sdf'
+    # )
+
     urdf_path = os.path.join(
-        get_package_share_directory('turtlebot3_gazebo'),
-        'models',
-        model_folder,
-        'model.sdf'
-    )
+        get_package_share_directory('turtlebot3_description'),
+        # get_package_share_directory('turtlebot3_gazebo'),
+        'urdf',
+        urdf_file_name)
 
     # Launch configuration variables specific to simulation
     x_pose = LaunchConfiguration('x_pose', default='0.0')
