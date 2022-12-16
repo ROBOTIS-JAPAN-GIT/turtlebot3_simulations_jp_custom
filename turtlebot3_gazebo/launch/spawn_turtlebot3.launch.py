@@ -60,6 +60,15 @@ def generate_launch_description():
             output='screen',
         )
 
+        ld = LaunchDescription()
+
+        # Declare the launch options
+        ld.add_action(declare_x_position_cmd)
+        ld.add_action(declare_y_position_cmd)
+
+        # Add any conditioned actions
+        ld.add_action(start_gazebo_ros_spawner_cmd)
+
     else:
         model_folder = 'turtlebot3_' + TURTLEBOT3_MODEL
         urdf_path = os.path.join(
@@ -95,14 +104,13 @@ def generate_launch_description():
             output='screen',
         )
     
+        ld = LaunchDescription()
 
-    ld = LaunchDescription()
+        # Declare the launch options
+        ld.add_action(declare_x_position_cmd)
+        ld.add_action(declare_y_position_cmd)
 
-    # Declare the launch options
-    ld.add_action(declare_x_position_cmd)
-    ld.add_action(declare_y_position_cmd)
-
-    # Add any conditioned actions
-    ld.add_action(start_gazebo_ros_spawner_cmd)
+        # Add any conditioned actions
+        ld.add_action(start_gazebo_ros_spawner_cmd)
 
     return ld
