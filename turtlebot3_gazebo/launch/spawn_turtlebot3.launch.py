@@ -25,17 +25,9 @@ def generate_launch_description():
     # Get the urdf file
     TURTLEBOT3_MODEL = os.environ['TURTLEBOT3_MODEL']
     urdf_file_name = 'turtlebot3_' + TURTLEBOT3_MODEL + '.urdf.xacro'
-    model_folder = 'turtlebot3_' + TURTLEBOT3_MODEL
-    # urdf_path = os.path.join(
-    #     get_package_share_directory('turtlebot3_gazebo'),
-    #     'models',
-    #     model_folder,
-    #     'model.sdf'
-    # )
 
     urdf_path = os.path.join(
         get_package_share_directory('turtlebot3_description'),
-        # get_package_share_directory('turtlebot3_gazebo'),
         'urdf',
         urdf_file_name)
 
@@ -56,14 +48,16 @@ def generate_launch_description():
         package='gazebo_ros',
         executable='spawn_entity.py',
         arguments=[
+            '-topic', '/robot_description',
             '-entity', TURTLEBOT3_MODEL,
-            '-file', urdf_path,
+            # '-file', urdf_path,
             '-x', x_pose,
             '-y', y_pose,
             '-z', '0.01'
         ],
         output='screen',
     )
+    
 
     ld = LaunchDescription()
 
