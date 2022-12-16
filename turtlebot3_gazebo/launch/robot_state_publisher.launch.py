@@ -19,16 +19,18 @@
 import os
 
 from ament_index_python.packages import get_package_share_directory
+
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, Command
 from launch_ros.actions import Node
+from launch_ros.descriptions import ParameterValue
 
 
 def generate_launch_description():
     TURTLEBOT3_MODEL = os.environ['TURTLEBOT3_MODEL']
 
-    use_sim_time = LaunchConfiguration('use_sim_time', default='false')
+    use_sim_time = LaunchConfiguration('use_sim_time', default='true')
     urdf_file_name = 'turtlebot3_' + TURTLEBOT3_MODEL + '.urdf.xacro'
     # urdf_file_name = 'turtlebot3_' + TURTLEBOT3_MODEL + '.urdf'
 
@@ -56,7 +58,8 @@ def generate_launch_description():
             output='screen',
             parameters=[{
                 'use_sim_time': use_sim_time,
-                'robot_description': robot_desc
+                'robot_description': ParameterValue(Command(['xacro ', str(urdf_path)]), value_type=str),
             }],
+            arguments=[urdf_path],
         ),
     ])
