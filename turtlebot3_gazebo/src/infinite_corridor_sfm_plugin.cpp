@@ -214,7 +214,7 @@ void InfiniteCorridorSFMPlugin::Reset() {
       }
     }
   } else if (this->sdf->HasElement("infinite_corridor")) {
-    sdf::ElementPtr elem = this->sdf->GetElement("random_trajectory");
+    sdf::ElementPtr elem = this->sdf->GetElement("infinite_corridor");
     std::mt19937 mt(this->seed);
     std::uniform_int_distribution<> rand100(0,99);
     ignition::math::Vector3d p1 = elem->Get<ignition::math::Vector3d>("p1");
@@ -275,7 +275,7 @@ void InfiniteCorridorSFMPlugin::Reset() {
     // 計算したゴールを設定
     this->sfmActor.cyclicGoals = true;
     int steps = 5;
-    for (int i = 0; i <= steps; i++) {
+    for (int i = 0; i < steps; i++) {
       sfm::Goal goal;
       goal.center.set(goals.at(i).X(), goals.at(i).Y());
       goal.radius = 0.3;
