@@ -72,21 +72,69 @@
           <model>ground_plane</model>
           <model>actor1_collision_model</model>
         </ignore_obstacles>
-        <!-- <trajectory>
-          <waypoint>3.0 0.0 0.0</waypoint>
-          <waypoint>8.0 0.0 0.0</waypoint>
-        </trajectory> -->
         <infinite_corridor>
           <p1>1.0 1.0 0.0</p1>
           <p2>5.0 5.0 0.0</p2>
         </infinite_corridor>
       </plugin>
 
-      <plugin name="attach_model1" filename="libAttachModelPlugin.so">
+      <plugin name="attach_actor1" filename="libAttachModelPlugin.so">
         <link>
           <link_name>actor1_pose</link_name>
           <model>
             <model_name>actor1_collision_model</model_name>
+          </model>
+        </link>
+      </plugin>
+    </actor>
+
+    <model name="actor2_collision_model">
+      <pose>0 0 -100 0 0 0</pose>
+      <static>true</static>
+      <link name="link">
+        <collision name="link">
+          <pose>0 -0.18 0.00 1.57 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.3</radius>
+              <length>1.8</length>
+            </cylinder>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+
+    <actor name="actor2">
+      <pose>-1 2 -10 0 0 0</pose>
+      <skin>
+        <filename>walk.dae</filename>
+        <scale>1.0</scale>
+      </skin>
+      <animation name="walking">
+        <filename>walk.dae</filename>
+        <scale>1.000000</scale>
+        <interpolate_x>true</interpolate_x>
+      </animation>
+
+      <plugin name="actor2_plugin" filename="libInfiniteCorridorSFMPlugin.so">
+        <random_velocity>true</random_velocity>
+        <radius>0.4</radius>
+        <!-- weights -->
+        <ignore_obstacles>
+          <model>ground_plane</model>
+          <model>actor2_collision_model</model>
+        </ignore_obstacles>
+        <infinite_corridor>
+          <p1>1.0 -1.0 0.0</p1>
+          <p2>5.0 -5.0 0.0</p2>
+        </infinite_corridor>
+      </plugin>
+
+      <plugin name="attach_actor2" filename="libAttachModelPlugin.so">
+        <link>
+          <link_name>actor2_pose</link_name>
+          <model>
+            <model_name>actor2_collision_model</model_name>
           </model>
         </link>
       </plugin>
