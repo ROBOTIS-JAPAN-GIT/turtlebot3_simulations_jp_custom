@@ -1,6 +1,6 @@
 /***********************************************************************/
 /**                                                                    */
-/** PedestrianSFMRandomPlugin.cpp                                            */
+/** InfiniteCorridorSFMPlugin.cpp                                            */
 /**                                                                    */
 /** Copyright (c) 2021, Service Robotics Lab (SRL).                    */
 /**                     http://robotics.upo.es                         */
@@ -29,15 +29,15 @@
 #include <turtlebot3_gazebo/infinite_corridor_sfm_plugin.h>
 
 using namespace gazebo;
-GZ_REGISTER_MODEL_PLUGIN(PedestrianSFMRandomPlugin)
+GZ_REGISTER_MODEL_PLUGIN(InfiniteCorridorSFMPlugin)
 
 #define WALKING_ANIMATION "walking"
 
 /////////////////////////////////////////////////
-PedestrianSFMRandomPlugin::PedestrianSFMRandomPlugin() {}
+InfiniteCorridorSFMPlugin::InfiniteCorridorSFMPlugin() {}
 
 /////////////////////////////////////////////////
-void PedestrianSFMRandomPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
+void InfiniteCorridorSFMPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
   this->sdf = _sdf;
   this->actor = boost::dynamic_pointer_cast<physics::Actor>(_model);
   this->world = this->actor->GetWorld();
@@ -48,8 +48,20 @@ void PedestrianSFMRandomPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _
   // std::string delimiter = ">=";
   // std::string token = s.substr(0, s.find(delimiter));
 
+  // 乱数生成
+  std::random_device rnd;
+  if (this->sdf->HasElement("seed")) {
+    this->seed = this->sdf->Get<int>("seed");
+  } else {
+    this->seed = rnd();
+  }
+  
+  std::mt19937 mt(this->seed);
+  std::uniform_int_distribution<> rand100(0,99);
+
+
   this->connections.push_back(event::Events::ConnectWorldUpdateBegin(
-      std::bind(&PedestrianSFMRandomPlugin::OnUpdate, this, std::placeholders::_1)));
+      std::bind(&InfiniteCorridorSFMPlugin::OnUpdate, this, std::placeholders::_1)));
 
   this->Reset();
 
@@ -140,7 +152,7 @@ void PedestrianSFMRandomPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _
 }
 
 /////////////////////////////////////////////////
-void PedestrianSFMRandomPlugin::Reset() {
+void InfiniteCorridorSFMPlugin::Reset() {
   // this->velocity = 0.8;
   this->lastUpdate = 0;
 
@@ -163,20 +175,8 @@ void PedestrianSFMRandomPlugin::Reset() {
       modelElem = modelElem->GetNextElement("waypoint");
     }
   } else if (this->sdf->HasElement("random_trajectory")){
-    
-    int seed;
-    sdf::ElementPtr modelElemSeed =
-        this->sdf->GetElement("random_trajectory")->GetElement("seed");
-
-    std::random_device rnd;
-    if (modelElemSeed)
-      seed = modelElemSeed->Get<int>() * (this->actor->GetId());
-    else
-      seed = rnd();
-    
-    std::mt19937 mt(seed);
+    std::mt19937 mt(this->seed);
     std::uniform_int_distribution<> rand100(0,99);
-
     ignition::math::Vector3d origin = this->sdf->GetElement("random_trajectory")->Get<ignition::math::Vector3d>("origin");
     double rx_max = this->sdf->GetElement("random_trajectory")->Get<double>("rx");
     double ry_max = this->sdf->GetElement("random_trajectory")->Get<double>("ry");
@@ -218,7 +218,7 @@ void PedestrianSFMRandomPlugin::Reset() {
 }
 
 /////////////////////////////////////////////////
-void PedestrianSFMRandomPlugin::HandleObstacles() {
+void InfiniteCorridorSFMPlugin::HandleObstacles() {
   double minDist = 10000.0;
   ignition::math::Vector3d closest_obs;
   ignition::math::Vector3d closest_obs2;
@@ -266,7 +266,7 @@ void PedestrianSFMRandomPlugin::HandleObstacles() {
 }
 
 /////////////////////////////////////////////////
-void PedestrianSFMRandomPlugin::HandlePedestrians() {
+void InfiniteCorridorSFMPlugin::HandlePedestrians() {
   this->otherActors.clear();
 
   for (unsigned int i = 0; i < this->world->ModelCount(); ++i) {
@@ -311,7 +311,7 @@ void PedestrianSFMRandomPlugin::HandlePedestrians() {
 }
 
 /////////////////////////////////////////////////
-void PedestrianSFMRandomPlugin::OnUpdate(const common::UpdateInfo &_info) {
+void InfiniteCorridorSFMPlugin::OnUpdate(const common::UpdateInfo &_info) {
   // Time delta
   double dt = (_info.simTime - this->lastUpdate).Double();
 

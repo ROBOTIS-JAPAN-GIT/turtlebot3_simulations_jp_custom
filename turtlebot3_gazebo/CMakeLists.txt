@@ -121,8 +121,8 @@ link_directories(
 )
 
 
-add_library(infinite_corridor_sfm_plugin src/infinite_corridor_sfm_plugin.cpp)
-target_link_libraries(infinite_corridor_sfm_plugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+add_library(InfiniteCorridorSFMPlugin src/infinite_corridor_sfm_plugin.cpp)
+target_link_libraries(InfiniteCorridorSFMPlugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
 
 add_library(PedestrianSFMRandomPlugin src/PedestrianSFMRandomPlugin.cpp)
 target_link_libraries(PedestrianSFMRandomPlugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES}) #${Boost_LIBRARIES

@@ -18,8 +18,8 @@
 /**                                                                    */
 /***********************************************************************/
 
-#ifndef GAZEBO_PLUGINS_PEDESTRIANSFMPLUGIN_HH_
-#define GAZEBO_PLUGINS_PEDESTRIANSFMPLUGIN_HH_
+#ifndef GAZEBO_PLUGINS_INFINITE_CORRIDOR_SFM_PLUGIN_HH_
+#define GAZEBO_PLUGINS_INFINITE_CORRIDOR_SFM_PLUGIN_HH_
 
 // C++
 #include <string>
@@ -36,11 +36,13 @@
 
 namespace gazebo
 {
-class GZ_PLUGIN_VISIBLE PedestrianSFMRandomPlugin : public ModelPlugin
+class GZ_PLUGIN_VISIBLE InfiniteCorridorSFMPlugin : public ModelPlugin
 {
+private:
+  int seed; // 乱数生成用のシード
   /// \brief Constructor
 public:
-  PedestrianSFMRandomPlugin();
+  InfiniteCorridorSFMPlugin();
 
   /// \brief Load the actor plugin.
   /// \param[in] _model Pointer to the parent model.
