@@ -65,18 +65,9 @@
       </animation>
 
       <plugin name="actor1_plugin" filename="libInfiniteCorridorSFMPlugin.so">
-        <velocity>0.9</velocity>
         <random_velocity>true</random_velocity>
         <radius>0.4</radius>
-        <animation_factor>5.1</animation_factor>
-        <people_distance>6.0</people_distance>
         <!-- weights -->
-        <goal_weight>2.0</goal_weight>
-        <obstacle_weight>10.0</obstacle_weight> <!--10.0-->
-        <social_weight>15</social_weight> <!--2.1-->
-        <group_gaze_weight>3.0</group_gaze_weight>
-        <group_coh_weight>2.0</group_coh_weight>
-        <group_rep_weight>1.0</group_rep_weight>
         <ignore_obstacles>
           <model>ground_plane</model>
           <model>actor1_collision_model</model>
