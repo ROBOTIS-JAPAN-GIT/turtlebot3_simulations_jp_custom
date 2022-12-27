@@ -163,16 +163,14 @@ void PedestrianSFMRandomPlugin::Reset() {
       modelElem = modelElem->GetNextElement("waypoint");
     }
   } else if (this->sdf->HasElement("random_trajectory")){
-    
-    int seed;
-    sdf::ElementPtr modelElemSeed =
-        this->sdf->GetElement("random_trajectory")->GetElement("seed");
-
     std::random_device rnd;
-    if (modelElemSeed)
-      seed = modelElemSeed->Get<int>() * (this->actor->GetId());
-    else
+    int seed;
+    if (this->sdf->HasElement("seed")) {
+      seed =
+      this->sdf->GetElement("random_trajectory")->Get<int>("seed")*(this->actor->GetId());
+    } else {
       seed = rnd();
+    }
     
     std::mt19937 mt(seed);
     std::uniform_int_distribution<> rand100(0,99);
