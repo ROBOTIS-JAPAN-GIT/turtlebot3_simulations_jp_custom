@@ -32,24 +32,50 @@
     </physics>
 
     <!-- Load model -->
-    <include>
+    <!-- <include>
       <uri>model://turtlebot3_jp_world</uri>
-    </include>
+    </include> -->
 
-    <model name="actor1_collision_model">
-      <pose>0 0 -100 0 0 0</pose>
-      <static>true</static>
-      <link name="link">
-        <collision name="link">
-          <pose>0 -0.18 0.00 1.57 0 0</pose>
-          <geometry>
-            <cylinder>
-              <radius>0.3</radius>
-              <length>1.8</length>
-            </cylinder>
-          </geometry>
-        </collision>
+    <model name="wall_left">
+      <pose>12.5 2.65 0.5 0 0 0</pose>
+      <link name="wall_left_link">
+      <collision name="wall_left_collision">
+        <geometry>
+          <box>
+            <size>25.0 0.3 1.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall_left_visual">
+        <geometry>
+          <box>
+            <size>25.0 0.3 1.0</size>
+          </box>
+        </geometry>
+      </visual>
       </link>
+      <static>true</static>
+    </model>
+
+    <model name="wall_right">
+      <pose>12.5 -2.65 0.5 0 0 0</pose>
+      <link name="wall_right_link">
+      <collision name="wall_right_collision">
+        <geometry>
+          <box>
+            <size>25.0 0.3 1.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall_right_visual">
+        <geometry>
+          <box>
+            <size>25.0 0.3 1.0</size>
+          </box>
+        </geometry>
+      </visual>
+      </link>
+      <static>true</static>
     </model>
 
     <actor name="actor1">
@@ -73,8 +99,8 @@
           <model>actor1_collision_model</model>
         </ignore_obstacles>
         <infinite_corridor>
-          <p1>1.0 1.0 0.0</p1>
-          <p2>5.0 5.0 0.0</p2>
+          <p1>-1.0 1.0 0.0</p1>
+          <p2>26.0 4.0 0.0</p2>
         </infinite_corridor>
       </plugin>
 
@@ -125,8 +151,8 @@
           <model>actor2_collision_model</model>
         </ignore_obstacles>
         <infinite_corridor>
-          <p1>1.0 -1.0 0.0</p1>
-          <p2>5.0 -5.0 0.0</p2>
+          <p1>-1.0 -1.0 0.0</p1>
+          <p2>26.0 -4.0 0.0</p2>
         </infinite_corridor>
       </plugin>
 
