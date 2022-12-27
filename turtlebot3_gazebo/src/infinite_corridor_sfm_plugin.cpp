@@ -259,7 +259,7 @@ void InfiniteCorridorSFMPlugin::Reset() {
       x-= xrange * (initial_position_rate-((xrange+2*yrange)/total_distance))/(xrange/total_distance);
     }
     ignition::math::Vector3d initial_goal(x,y,0);
-    goals.push_back(initial_goal);
+    // goals.push_back(initial_goal);
 
     // ループする経路計算
     std::vector<ignition::math::Vector3d> loop_goals = {
@@ -272,21 +272,19 @@ void InfiniteCorridorSFMPlugin::Reset() {
       goals.push_back(loop_goals.at((i+initial_position_state)%4));
     }
 
+    // 初期位置設定
+    this->sfmActor.position.set(initial_goal.X(), initial_goal.Y());
+    ignition::math::Pose3d actorPose = this->actor->WorldPose();
+    actorPose.Pos().X(this->sfmActor.position.getX());
+    actorPose.Pos().Y(this->sfmActor.position.getY());
+    this->actor->SetWorldPose(actorPose, false, false);
     // 計算したゴールを設定
     this->sfmActor.cyclicGoals = true;
-    int steps = 5;
-    for (int i = 0; i < steps; i++) {
+    for (int i = 0; i < goals.size(); i++) {
       sfm::Goal goal;
       goal.center.set(goals.at(i).X(), goals.at(i).Y());
       goal.radius = 0.3;
       this->sfmActor.goals.push_back(goal);
-      if (i == 0) {
-        this->sfmActor.position.set(goals.at(i).X(), goals.at(i).Y());
-        ignition::math::Pose3d actorPose = this->actor->WorldPose();
-        actorPose.Pos().X(this->sfmActor.position.getX());
-        actorPose.Pos().Y(this->sfmActor.position.getY());
-        this->actor->SetWorldPose(actorPose, false, false);
-      }
     }
   }
 
