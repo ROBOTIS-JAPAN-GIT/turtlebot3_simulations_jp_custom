@@ -26,7 +26,7 @@
 
 //#include <ignition/math.hh>
 //#include <ignition/math/gzmath.hh>
-#include <turtlebot3_gazebo/PedestrianSFMRandomPlugin.h>
+#include <turtlebot3_gazebo/infinite_corridor_sfm_plugin.h>
 
 using namespace gazebo;
 GZ_REGISTER_MODEL_PLUGIN(PedestrianSFMRandomPlugin)
