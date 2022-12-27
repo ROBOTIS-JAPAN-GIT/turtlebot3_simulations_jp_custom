@@ -18,6 +18,11 @@
 /**                                                                    */
 /***********************************************************************/
 
+// 速度のランダム変更有効時 (random_velocity == true)の速度制限値
+#define VELOCITY_MAX 2.4
+#define VELOCITY_MIN 0.3
+
+
 #include <functional>
 #include <stdio.h>
 #include <string>
@@ -81,6 +86,12 @@ void InfiniteCorridorSFMPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _
     this->sfmActor.desiredVelocity = _sdf->Get<double>("velocity");
   else
     this->sfmActor.desiredVelocity = 0.8;
+  // random_velocity という要素が存在しtrueならば速度をランダムにオーバーライド
+  if (_sdf->HasElement("random_velocity")) {
+    if (_sdf->Get<bool>("random_velocity")) {
+      this->sfmActor.desiredVelocity = (VELOCITY_MAX-VELOCITY_MIN)*rand100(mt)/99.0 + VELOCITY_MIN;
+    }
+  }
 
   // Read in the target weight
   if (_sdf->HasElement("goal_weight"))
