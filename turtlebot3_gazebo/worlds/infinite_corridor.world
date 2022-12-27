@@ -66,6 +66,7 @@
 
       <plugin name="actor1_plugin" filename="libInfiniteCorridorSFMPlugin.so">
         <velocity>0.9</velocity>
+        <random_velocity>true</random_velocity>
         <radius>0.4</radius>
         <animation_factor>5.1</animation_factor>
         <people_distance>6.0</people_distance>
