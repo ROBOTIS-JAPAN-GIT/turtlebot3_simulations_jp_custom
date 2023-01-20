@@ -43,9 +43,6 @@ def generate_launch_description():
             'urdf',
             urdf_file_name)
 
-        with open(urdf_path, 'r') as infp:
-            robot_desc = infp.read()
-
         return LaunchDescription([
             DeclareLaunchArgument(
                 'use_sim_time',
@@ -61,7 +58,7 @@ def generate_launch_description():
                     'use_sim_time': use_sim_time,
                     'robot_description': ParameterValue(Command(['xacro ', str(urdf_path)]), value_type=str),
                 }],
-                arguments=[urdf_path],
+                # arguments=[urdf_path],
             ),
         ])
 
