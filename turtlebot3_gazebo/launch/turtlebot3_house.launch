@@ -13,7 +13,26 @@
     <arg name="debug" value="false"/>
   </include>
 
-  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
+  <group unless="$(arg platform)">
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro'" />
+  </group>
+  <group if="$(arg platform)">
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find tb3mm_6dof)/urdf/tb3_$(arg model)_sara.urdf.xacro'" />
+  
+    <!-- controller utils -->
+    <!-- start joint state controller -->
+    <rosparam file="$(find tb3mm_6dof)/config/joint_state_controller.yaml" command="load"/>
+    <node name="joint_state_controller_spawner" pkg="controller_manager" type="controller_manager" output="screen"
+      args="spawn joint_state_controller" respawn="false"/>
 
+    <!-- run controllers -->
+    <!-- arm controller -->
+    <rosparam file="$(find tb3mm_6dof)/config/arm_controller.yaml" command="load"/>
+    <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm_controller"/>
+
+    <!-- gripper controller -->
+    <rosparam file="$(find tb3mm_6dof)/config/gripper_controller.yaml" command="load"/>
+    <node name="gripper_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper_controller"/>
+  </group>
   <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model turtlebot3 -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param robot_description" />
 </launch>

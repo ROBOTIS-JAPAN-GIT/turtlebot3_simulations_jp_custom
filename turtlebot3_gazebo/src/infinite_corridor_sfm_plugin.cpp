@@ -1,6 +1,6 @@
 /***********************************************************************/
 /**                                                                    */
-/** PedestrianSFMRandomPlugin.cpp                                            */
+/** InfiniteCorridorSFMPlugin.cpp                                            */
 /**                                                                    */
 /** Copyright (c) 2021, Service Robotics Lab (SRL).                    */
 /**                     http://robotics.upo.es                         */
@@ -18,6 +18,11 @@
 /**                                                                    */
 /***********************************************************************/
 
+// 速度のランダム変更有効時 (random_velocity == true)の速度制限値
+#define VELOCITY_MAX 2.4
+#define VELOCITY_MIN 0.3
+
+
 #include <functional>
 #include <stdio.h>
 #include <string>
@@ -26,18 +31,18 @@
 
 //#include <ignition/math.hh>
 //#include <ignition/math/gzmath.hh>
-#include <turtlebot3_gazebo/PedestrianSFMRandomPlugin.h>
+#include <turtlebot3_gazebo/infinite_corridor_sfm_plugin.h>
 
 using namespace gazebo;
-GZ_REGISTER_MODEL_PLUGIN(PedestrianSFMRandomPlugin)
+GZ_REGISTER_MODEL_PLUGIN(InfiniteCorridorSFMPlugin)
 
 #define WALKING_ANIMATION "walking"
 
 /////////////////////////////////////////////////
-PedestrianSFMRandomPlugin::PedestrianSFMRandomPlugin() {}
+InfiniteCorridorSFMPlugin::InfiniteCorridorSFMPlugin() {}
 
 /////////////////////////////////////////////////
-void PedestrianSFMRandomPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
+void InfiniteCorridorSFMPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
   this->sdf = _sdf;
   this->actor = boost::dynamic_pointer_cast<physics::Actor>(_model);
   this->world = this->actor->GetWorld();
@@ -48,8 +53,20 @@ void PedestrianSFMRandomPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _
   // std::string delimiter = ">=";
   // std::string token = s.substr(0, s.find(delimiter));
 
+  // 乱数生成
+  std::random_device rnd;
+  if (this->sdf->HasElement("seed")) {
+    this->seed = this->sdf->Get<int>("seed");
+  } else {
+    this->seed = rnd();
+  }
+  
+  std::mt19937 mt(this->seed);
+  std::uniform_int_distribution<> rand100(0,99);
+
+
   this->connections.push_back(event::Events::ConnectWorldUpdateBegin(
-      std::bind(&PedestrianSFMRandomPlugin::OnUpdate, this, std::placeholders::_1)));
+      std::bind(&InfiniteCorridorSFMPlugin::OnUpdate, this, std::placeholders::_1)));
 
   this->Reset();
 
@@ -69,6 +86,12 @@ void PedestrianSFMRandomPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _
     this->sfmActor.desiredVelocity = _sdf->Get<double>("velocity");
   else
     this->sfmActor.desiredVelocity = 0.8;
+  // random_velocity という要素が存在しtrueならば速度をランダムにオーバーライド
+  if (_sdf->HasElement("random_velocity")) {
+    if (_sdf->Get<bool>("random_velocity")) {
+      this->sfmActor.desiredVelocity = (VELOCITY_MAX-VELOCITY_MIN)*rand100(mt)/99.0 + VELOCITY_MIN;
+    }
+  }
 
   // Read in the target weight
   if (_sdf->HasElement("goal_weight"))
@@ -140,7 +163,7 @@ void PedestrianSFMRandomPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _
 }
 
 /////////////////////////////////////////////////
-void PedestrianSFMRandomPlugin::Reset() {
+void InfiniteCorridorSFMPlugin::Reset() {
   // this->velocity = 0.8;
   this->lastUpdate = 0;
 
@@ -163,18 +186,8 @@ void PedestrianSFMRandomPlugin::Reset() {
       modelElem = modelElem->GetNextElement("waypoint");
     }
   } else if (this->sdf->HasElement("random_trajectory")){
-    std::random_device rnd;
-    int seed;
-    if (this->sdf->HasElement("seed")) {
-      seed =
-      this->sdf->GetElement("random_trajectory")->Get<int>("seed")*(this->actor->GetId());
-    } else {
-      seed = rnd();
-    }
-    
-    std::mt19937 mt(seed);
+    std::mt19937 mt(this->seed);
     std::uniform_int_distribution<> rand100(0,99);
-
     ignition::math::Vector3d origin = this->sdf->GetElement("random_trajectory")->Get<ignition::math::Vector3d>("origin");
     double rx_max = this->sdf->GetElement("random_trajectory")->Get<double>("rx");
     double ry_max = this->sdf->GetElement("random_trajectory")->Get<double>("ry");
@@ -200,6 +213,79 @@ void PedestrianSFMRandomPlugin::Reset() {
         this->actor->SetWorldPose(actorPose, false, false);
       }
     }
+  } else if (this->sdf->HasElement("infinite_corridor")) {
+    sdf::ElementPtr elem = this->sdf->GetElement("infinite_corridor");
+    std::mt19937 mt(this->seed);
+    std::uniform_int_distribution<> rand100(0,99);
+    ignition::math::Vector3d p1 = elem->Get<ignition::math::Vector3d>("p1");
+    ignition::math::Vector3d p2 = elem->Get<ignition::math::Vector3d>("p2");
+
+    // 経路保存配列（最初の要素は初期位置）
+    std::vector<ignition::math::Vector3d> goals;
+
+    const double xrange = fabs(p1.X()-p2.X());
+    const double yrange = fabs(p1.Y()-p2.Y());
+    const double total_distance = 2*xrange+2*yrange;
+
+    const double xmax = std::max(p1.X(), p2.X());
+    const double xmin = std::min(p1.X(), p2.X());
+    const double ymax = std::max(p1.Y(), p2.Y());
+    const double ymin = std::min(p1.Y(), p2.Y());
+
+    // 初期位置計算
+    double initial_position_rate = rand100(mt)/99.0;
+    int initial_position_state;
+    double x;
+    double y;
+    if (initial_position_rate < yrange/total_distance) {
+      initial_position_state = 0;
+      x = xmin;
+      y = ymax;
+      y -= yrange * initial_position_rate/(yrange/total_distance);
+    } else if (initial_position_rate < (yrange+xrange)/total_distance) {
+      initial_position_state = 1;
+      x = xmin;
+      y = ymin;
+      x += xrange * (initial_position_rate-(yrange/total_distance))/(xrange/total_distance);
+    } else if (initial_position_rate < (2*yrange+xrange)/total_distance) {
+      initial_position_state = 2;
+      x = xmax;
+      y = ymin;
+      y += yrange * (initial_position_rate-((xrange+yrange)/total_distance))/(yrange/total_distance);
+    } else {
+      initial_position_state = 3;
+      x = xmax;
+      y = ymax;
+      x-= xrange * (initial_position_rate-((xrange+2*yrange)/total_distance))/(xrange/total_distance);
+    }
+    ignition::math::Vector3d initial_goal(x,y,0);
+    // goals.push_back(initial_goal);
+
+    // ループする経路計算
+    std::vector<ignition::math::Vector3d> loop_goals = {
+      {xmin, ymin, 0.0},
+      {xmax, ymin, 0.0},
+      {xmax, ymax, 0.0},
+      {xmin, ymax, 0.0},
+    };
+    for (int i = 0; i < 4; i++) {
+      goals.push_back(loop_goals.at((i+initial_position_state)%4));
+    }
+
+    // 初期位置設定
+    this->sfmActor.position.set(initial_goal.X(), initial_goal.Y());
+    ignition::math::Pose3d actorPose = this->actor->WorldPose();
+    actorPose.Pos().X(this->sfmActor.position.getX());
+    actorPose.Pos().Y(this->sfmActor.position.getY());
+    this->actor->SetWorldPose(actorPose, false, false);
+    // 計算したゴールを設定
+    this->sfmActor.cyclicGoals = true;
+    for (int i = 0; i < goals.size(); i++) {
+      sfm::Goal goal;
+      goal.center.set(goals.at(i).X(), goals.at(i).Y());
+      goal.radius = 0.3;
+      this->sfmActor.goals.push_back(goal);
+    }
   }
 
   auto skelAnims = this->actor->SkeletonAnimations();
@@ -216,7 +302,7 @@ void PedestrianSFMRandomPlugin::Reset() {
 }
 
 /////////////////////////////////////////////////
-void PedestrianSFMRandomPlugin::HandleObstacles() {
+void InfiniteCorridorSFMPlugin::HandleObstacles() {
   double minDist = 10000.0;
   ignition::math::Vector3d closest_obs;
   ignition::math::Vector3d closest_obs2;
@@ -264,7 +350,7 @@ void PedestrianSFMRandomPlugin::HandleObstacles() {
 }
 
 /////////////////////////////////////////////////
-void PedestrianSFMRandomPlugin::HandlePedestrians() {
+void InfiniteCorridorSFMPlugin::HandlePedestrians() {
   this->otherActors.clear();
 
   for (unsigned int i = 0; i < this->world->ModelCount(); ++i) {
@@ -309,7 +395,7 @@ void PedestrianSFMRandomPlugin::HandlePedestrians() {
 }
 
 /////////////////////////////////////////////////
-void PedestrianSFMRandomPlugin::OnUpdate(const common::UpdateInfo &_info) {
+void InfiniteCorridorSFMPlugin::OnUpdate(const common::UpdateInfo &_info) {
   // Time delta
   double dt = (_info.simTime - this->lastUpdate).Double();
 

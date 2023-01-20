@@ -29,8 +29,27 @@
   </include>  
 
   <group ns = "$(arg first_tb3)">
-    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
+    <group unless="$(arg platform)">
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro'" />
+  </group>
+  <group if="$(arg platform)">
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find tb3mm_6dof)/urdf/tb3_$(arg model)_sara.urdf.xacro'" />
+  
+    <!-- controller utils -->
+    <!-- start joint state controller -->
+    <rosparam file="$(find tb3mm_6dof)/config/joint_state_controller.yaml" command="load"/>
+    <node name="joint_state_controller_spawner" pkg="controller_manager" type="controller_manager" output="screen"
+      args="spawn joint_state_controller" respawn="false"/>
 
+    <!-- run controllers -->
+    <!-- arm controller -->
+    <rosparam file="$(find tb3mm_6dof)/config/arm_controller.yaml" command="load"/>
+    <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm_controller"/>
+
+    <!-- gripper controller -->
+    <rosparam file="$(find tb3mm_6dof)/config/gripper_controller.yaml" command="load"/>
+    <node name="gripper_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper_controller"/>
+  </group>
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
       <param name="publish_frequency" type="double" value="50.0" />
       <param name="tf_prefix" value="$(arg first_tb3)" />
@@ -40,8 +59,27 @@
   </group>
 
   <group ns = "$(arg second_tb3)">
-    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
+    <group unless="$(arg platform)">
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro'" />
+  </group>
+  <group if="$(arg platform)">
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find tb3mm_6dof)/urdf/tb3_$(arg model)_sara.urdf.xacro'" />
+  
+    <!-- controller utils -->
+    <!-- start joint state controller -->
+    <rosparam file="$(find tb3mm_6dof)/config/joint_state_controller.yaml" command="load"/>
+    <node name="joint_state_controller_spawner" pkg="controller_manager" type="controller_manager" output="screen"
+      args="spawn joint_state_controller" respawn="false"/>
 
+    <!-- run controllers -->
+    <!-- arm controller -->
+    <rosparam file="$(find tb3mm_6dof)/config/arm_controller.yaml" command="load"/>
+    <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm_controller"/>
+
+    <!-- gripper controller -->
+    <rosparam file="$(find tb3mm_6dof)/config/gripper_controller.yaml" command="load"/>
+    <node name="gripper_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper_controller"/>
+  </group>
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
       <param name="publish_frequency" type="double" value="50.0" />
       <param name="tf_prefix" value="$(arg second_tb3)" />
@@ -51,8 +89,27 @@
   </group>
 
   <group ns = "$(arg third_tb3)">
-    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
+    <group unless="$(arg platform)">
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro'" />
+  </group>
+  <group if="$(arg platform)">
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find tb3mm_6dof)/urdf/tb3_$(arg model)_sara.urdf.xacro'" />
+  
+    <!-- controller utils -->
+    <!-- start joint state controller -->
+    <rosparam file="$(find tb3mm_6dof)/config/joint_state_controller.yaml" command="load"/>
+    <node name="joint_state_controller_spawner" pkg="controller_manager" type="controller_manager" output="screen"
+      args="spawn joint_state_controller" respawn="false"/>
 
+    <!-- run controllers -->
+    <!-- arm controller -->
+    <rosparam file="$(find tb3mm_6dof)/config/arm_controller.yaml" command="load"/>
+    <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm_controller"/>
+
+    <!-- gripper controller -->
+    <rosparam file="$(find tb3mm_6dof)/config/gripper_controller.yaml" command="load"/>
+    <node name="gripper_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper_controller"/>
+  </group>
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
       <param name="publish_frequency" type="double" value="50.0" />
       <param name="tf_prefix" value="$(arg third_tb3)" />
