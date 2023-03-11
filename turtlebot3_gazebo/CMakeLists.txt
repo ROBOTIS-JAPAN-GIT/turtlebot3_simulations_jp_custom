@@ -50,7 +50,9 @@ set(dependencies
   "turtlebot3_description"
 )
 
-set(EXEC_NAME "turtlebot3_drive")
+set(EXEC_NAME 
+  "turtlebot3_drive"
+)
 
 add_executable(${EXEC_NAME} src/turtlebot3_drive.cpp)
 ament_target_dependencies(${EXEC_NAME} ${dependencies})
@@ -78,6 +80,15 @@ install(DIRECTORY launch models rviz urdf worlds
 install(DIRECTORY include/
   DESTINATION include/
 )
+
+add_library(InfiniteCorridorSFMPlugin src/infinite_corridor_sfm_plugin.cpp)
+target_link_libraries(InfiniteCorridorSFMPlugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+
+add_library(PedestrianSFMRandomPlugin SHARED src/PedestrianSFMRandomPlugin.cpp)
+target_link_libraries(PedestrianSFMRandomPlugin ${GAZEBO_LIBRARIES})
+
+add_library(initial_random SHARED src/initial_random.cc)
+target_link_libraries(initial_random ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
 
 ################################################################################
 # Macro for ament package
