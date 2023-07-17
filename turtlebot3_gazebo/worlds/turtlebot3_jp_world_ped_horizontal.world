@@ -32,9 +32,9 @@
     </physics>
 
     <!-- Load model -->
-    <include>
+    <!--<include>
       <uri>model://turtlebot3_jp_world_corridor</uri>
-    </include>
+    </include>-->
 
 
     <--! velocity 1.0 -->
@@ -63,7 +63,7 @@
       </link>
     </model>
     <actor name="actor2">
-      <pose>2.5 -2.5 0 0 0 0</pose>
+      <pose>2.5 0 0 0 0 0</pose>
       <skin>
         <filename>walk.dae</filename>
         <scale>1.0</scale>
@@ -75,7 +75,7 @@
       </animation>
   
       <plugin name="actor2_plugin" filename="libPedestrianSFMRandomPlugin.so">
-        <velocity>1.0</velocity>
+        <velocity>0.6</velocity>
         <radius>0.4</radius>
         <animation_factor>5.1</animation_factor>
         <people_distance>6.0</people_distance>
@@ -92,9 +92,9 @@
         </ignore_obstacles>
         <trajectory>
           <cyclic>true</cyclic>
-          <waypoint>2.5 -2.5 0</waypoint>
-          <waypoint>2.5 2.5 0</waypoint>
-          <waypoint>2.5 -2.5 0</waypoint>
+          <waypoint>2.5 -2.0 0</waypoint>
+          <waypoint>2.5 2.0 0</waypoint>
+          <waypoint>2.5 -2.0 0</waypoint>
         </trajectory>
         <!-- <random_trajectory>
           <steps>10</steps> -->
