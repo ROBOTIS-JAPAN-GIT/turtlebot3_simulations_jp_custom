@@ -38,6 +38,9 @@ link_directories(
 
 include_directories(
   include
+  /usr/local/include  #to find lightsfm
+  ${Boost_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS}
   ${GAZEBO_INCLUDE_DIRS}
 )
 
@@ -84,8 +87,26 @@ install(DIRECTORY include/
 add_library(InfiniteCorridorSFMPlugin src/infinite_corridor_sfm_plugin.cpp)
 target_link_libraries(InfiniteCorridorSFMPlugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
 
-add_library(PedestrianSFMRandomPlugin SHARED src/PedestrianSFMRandomPlugin.cpp)
-target_link_libraries(PedestrianSFMRandomPlugin ${GAZEBO_LIBRARIES})
+# PedestrianSFMRandomPlugin
+set(pedestrian_plugin_name PedestrianSFMRandomPlugin)
+add_library(${pedestrian_plugin_name} SHARED src/PedestrianSFMRandomPlugin.cpp)
+target_include_directories(${pedestrian_plugin_name} PUBLIC include)
+target_link_libraries(${pedestrian_plugin_name} ${GAZEBO_LIBRARIES})
+install(TARGETS ${pedestrian_plugin_name}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+# AttachModelPlugin
+set(attach_model_plugin_name AttachModelPlugin)
+add_library(${attach_model_plugin_name} SHARED src/AttachModelPlugin.cc)
+target_link_libraries(${attach_model_plugin_name} ${GAZEBO_LIBRARIES})
+install(TARGETS ${attach_model_plugin_name}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
 
 add_library(initial_random SHARED src/initial_random.cc)
 target_link_libraries(initial_random ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
